@@ -27,9 +27,9 @@ def main():
         "-l", "--max_length", default=2048, type=int, help="max total length including prompt and output"
     )
     parser.add_argument("-c", "--max_context_length", default=512, type=int, help="max context length")
-    parser.add_argument("--top_k", default=0, type=int, help="top-k sampling")
-    parser.add_argument("--top_p", default=0.7, type=float, help="top-p sampling")
-    parser.add_argument("--temp", default=0.95, type=float, help="temperature")
+    parser.add_argument("--top_k", default=1, type=int, help="top-k sampling")
+    parser.add_argument("--top_p", default=0.9, type=float, help="top-p sampling")
+    parser.add_argument("--temp", default=1.0, type=float, help="temperature")
     parser.add_argument("-t", "--threads", default=0, type=int, help="number of threads for inference")
     args = parser.parse_args()
 

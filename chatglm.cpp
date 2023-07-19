@@ -1287,12 +1287,24 @@ Pipeline::Pipeline(const std::string &path) {
     }
 }
 
+
+static double GetSpan(std::chrono::system_clock::time_point time1, std::chrono::system_clock::time_point time2) {
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds> (time2 - time1);
+    return double(duration.count()) * std::chrono::microseconds::period::num / std::chrono::microseconds::period::den;
+}
+
 std::string Pipeline::chat(const std::vector<std::string> &history, const GenerationConfig &gen_config,
                            BaseStreamer *streamer) const {
+    auto st = std::chrono::system_clock::now();
     std::vector<int> input_ids = tokenizer->encode_history(history, gen_config.max_context_length);
+
     std::vector<int> output_ids = model->generate(input_ids, gen_config, streamer);
 
     std::vector<int> new_output_ids(output_ids.begin() + input_ids.size(), output_ids.end());
+
+    int token_count = new_output_ids.size();
+    float spend = GetSpan(st, std::chrono::system_clock::now());
+    printf("use %f s token: %d \n %f token/s \n", spend, token_count, (float)token_count / spend);
     std::string output = tokenizer->decode(new_output_ids);
     return output;
 }
